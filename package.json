@@ -24,8 +24,13 @@
   },
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.47.1",
+    "@typescript-eslint/parser": "^5.47.1",
     "@yarnpkg/sdks": "^3.0.0-rc.34",
     "eslint": "^8.30.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "prettier": "^2.8.1"
   }
 }
