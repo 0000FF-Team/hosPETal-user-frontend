@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
     "@next/font": "13.1.1",
     "@reduxjs/toolkit": "^1.9.1",
     "@tanstack/react-query": "^4.20.4",
@@ -24,6 +26,7 @@
   },
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
+    "@emotion/babel-plugin": "^11.10.5",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",
     "@yarnpkg/sdks": "^3.0.0-rc.34",
