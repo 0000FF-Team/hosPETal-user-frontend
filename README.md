@@ -5,7 +5,7 @@
 |---|---|
 |언어|`TypeScript`
 |라이브러리|`React`
-|프레임워크|`Next.js`
+|프레임워크|`Next.js` (v.12)
 |상태관리|`Redux`, `Redux-toolkit`, `React-Query`
 |스타일링|`emotion`
 |패키지 관리자|`yarn berry` (PnP(Zero-install))
