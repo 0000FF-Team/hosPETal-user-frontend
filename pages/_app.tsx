@@ -20,10 +20,10 @@ export default function App({ Component, pageProps }: AppProps) {
               <Image src={horLogo} alt="horLogo" width={200} />
               <Info>
                 <h1>동물병원 예약</h1>
-                <p>이제는 빠르고 간편하게 주변의 동물병원을 찾고 예약해보세요!</p>
+                <p>{`이제는 빠르고 간편하게\n주변 동물병원을 찾고 예약해보세요!`}</p>
                 <SearchBar>
                   <input placeholder="병원 이름을 검색해보세요" />
-                  <SearchIcon fill="#333" />
+                  <SearchIcon fill="#333" className="searchIcon" />
                 </SearchBar>
               </Info>
               <div />
@@ -91,9 +91,13 @@ const Info = styled.div`
   width: 80%;
   h1 {
     color: ${COLORS.PRIMARY};
+    font-size: 45px;
   }
   p {
     color: #9f9f9f;
+    font-size: 18px;
+    white-space: pre-wrap;
+    line-height: 25px;
   }
   input {
     width: 90%;
@@ -110,5 +114,8 @@ const SearchBar = styled.div`
   padding: 15px;
   .searchIcon {
     cursor: pointer;
+  }
+  input {
+    font-size: 17px;
   }
 `;
