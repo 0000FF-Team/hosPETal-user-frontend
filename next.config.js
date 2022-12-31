@@ -1,5 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // images: {
+  //   domains: ['localhost', '*'],
+  //   remotePatterns: [
+  //     {
+  //       protocol: 'https',
+  //       hostname: 'www.amc.seoul.kr',
+  //       pathname: '/asan/images/hospitalinfo',
+  //     },
+  //   ],
+  // },
   reactStrictMode: true,
   swcMinify: false,
   webpack: (config) => {

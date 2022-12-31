@@ -2,14 +2,16 @@ import { css, keyframes } from '@emotion/react';
 
 export const COLORS = {
   PRIMARY: '#1A8DE9',
-  LIGHT300: '#68BCFF',
-  LIGHT200: '#A5D7FF',
-  LIGHT100: '#E0EFFB',
+  PRIMARY300: '#68BCFF',
+  PRIMARY200: '#A5D7FF',
+  PRIMARY100: '#E0EFFB',
   GRAY100: '#FAFAFA',
   GRAY200: '#F5F5F5',
   GRAY300: '#EEE',
   GRAY400: '#E0E0E0',
   GRAY500: '#BDBDBD',
+  ERROR: '#FF3F4C',
+  DARK: '#1E2630',
 };
 
 export const ANIMATIONS = {

@@ -4,18 +4,22 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import horLogo from '../public/images/horLogo.png';
 import SearchIcon from '../public/images/SearchIcon.svg';
-import { global } from '../styles/global';
+import { CenterAlign, global } from '../styles/global';
 import { COLORS } from 'config/styles';
 import MediaOnlyDiv from 'components/MediaOnlyDiv';
 import NavigationBar from 'components/NavigationBar';
+import { SearchField } from 'components/SearchField';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export default function App({ Component, pageProps }: AppProps) {
+  const queryClient = new QueryClient();
+
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <Global styles={global} />
       <Container>
         <MediaOnlyDiv media="desktop">
-          <ContentsLayout>
+          <Layout>
             <MainContainer>
               <Image src={horLogo} alt="horLogo" width={200} />
               <Info>
@@ -23,38 +27,42 @@ export default function App({ Component, pageProps }: AppProps) {
                 <p>{`이제는 빠르고 간편하게\n주변 동물병원을 찾고 예약해보세요!`}</p>
                 <SearchBar>
                   <input placeholder="병원 이름을 검색해보세요" />
-                  <SearchIcon fill="#333" className="searchIcon" />
+                  <button type="submit">
+                    <SearchIcon fill="#333" className="searchIcon" />
+                  </button>
                 </SearchBar>
               </Info>
               <div />
               <div />
             </MainContainer>
-            <UserApp>
-              <Component {...pageProps} />
+            <AppDisplay>
+              <PageDisplay>
+                <Component {...pageProps} />
+              </PageDisplay>
               <NavigationBar />
-            </UserApp>
-          </ContentsLayout>
+            </AppDisplay>
+          </Layout>
         </MediaOnlyDiv>
 
         <MediaOnlyDiv media="tablet">
-          <ContentsLayout>
-            <UserApp>
+          <Layout>
+            <AppDisplay>
               <Component {...pageProps} />
               <NavigationBar />
-            </UserApp>
-          </ContentsLayout>
+            </AppDisplay>
+          </Layout>
         </MediaOnlyDiv>
 
         <MediaOnlyDiv media="mobile">
-          <ContentsLayout>
-            <UserApp>
+          <Layout>
+            <AppDisplay>
               <Component {...pageProps} />
               <NavigationBar />
-            </UserApp>
-          </ContentsLayout>
+            </AppDisplay>
+          </Layout>
         </MediaOnlyDiv>
       </Container>
-    </>
+    </QueryClientProvider>
   );
 }
 
@@ -63,11 +71,7 @@ const Container = styled.div`
   width: 100vw;
   height: 100vh;
 `;
-const ContentsLayout = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+const Layout = styled(CenterAlign)``;
 const MainContainer = styled.div`
   width: 512px;
   height: 100vh;
@@ -75,14 +79,23 @@ const MainContainer = styled.div`
   flex-direction: column;
   justify-content: space-around;
 `;
-const UserApp = styled.div`
+const AppDisplay = styled.div`
+  background-color: #fff;
   max-width: 420px;
   width: 100%;
   height: 100vh;
   border: 1px solid #eee;
   box-sizing: border-box;
   overflow-y: scroll;
-  padding-bottom: 60px;
+  -ms-overflow-style: none; /* IE */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera, Edge */
+  }
+`;
+const PageDisplay = styled.div`
+  height: 100%;
+  /* padding-bottom: 60px; */
 `;
 const Info = styled.div`
   display: flex;
@@ -105,17 +118,7 @@ const Info = styled.div`
     padding: 10px 0;
   }
 `;
-const SearchBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
+const SearchBar = styled(SearchField)`
   border: 1px solid #eee;
   border-radius: 50px;
-  padding: 15px;
-  .searchIcon {
-    cursor: pointer;
-  }
-  input {
-    font-size: 17px;
-  }
 `;
