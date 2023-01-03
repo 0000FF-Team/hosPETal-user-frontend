@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
 import { NextPage } from 'next';
-import Image from 'next/image';
 import Bookmark from '../../public/images/Bookmark.svg';
 import Share from '../../public/images/Share.svg';
 import Star from '../../public/images/Star.svg';
@@ -9,6 +8,7 @@ import Copy from '../../public/images/Copy.svg';
 import { HospitalDetailProps } from 'config/types';
 import { COLORS } from 'config/styles';
 import { CenterAlign, Gap } from '../../styles/global';
+import { useRouter } from 'next/router';
 
 const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
   const hospitalName = '서울 아산 병원';
@@ -27,7 +27,7 @@ const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
   const lunchTime = `${lunchStart} ~ ${lunchEnd}`;
   const imgUrl = 'https://www.amc.seoul.kr/asan/images/hospitalinfo/img_introRolling01.jpg';
 
-  // const router = useRouter();
+  const router = useRouter();
   // const id = router?.query.id;
   // const hospitalInfo = useQuery([getHospitalInfoQueryKey, id], () => getHospitalInfoApi(id!));
   // const { grade } = hospitalInfo.data;
@@ -144,16 +144,13 @@ const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
         </Notice>
       </HospitalInfo>
 
-      {/* <HospitalInfo className="borderN">
-        <h2>리뷰</h2>
-        <Review></Review>
-      </HospitalInfo> */}
-
       <Contact>
         <button className="call">
           <Call fill="#333" stroke="#333" />
         </button>
-        <button className="reserve">예약하기</button>
+        <button className="reserve" onClick={() => router.push('/reserve')}>
+          예약하기
+        </button>
       </Contact>
     </Container>
   );
@@ -162,6 +159,7 @@ const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
 const Container = styled.div`
   width: 100%;
   height: 100%;
+  padding-bottom: 150px;
 `;
 const TopImgContainer = styled.div`
   position: relative;
@@ -206,7 +204,7 @@ const HospitalInfo = styled.div`
     border: none;
   }
   &.lastInfo {
-    padding-bottom: 150px;
+    padding-bottom: 80px;
   }
 `;
 const InfoHead = styled.div`
@@ -231,9 +229,9 @@ const Notice = styled.div`
   width: 90%;
   margin: 20px auto;
   padding: 20px;
+  border: 1px solid #eee;
   font-size: 15px;
   text-align: center;
-  border: 1px solid #eee;
 `;
 const Introduce = styled(Notice)`
   border: none;
@@ -246,16 +244,20 @@ const Tags = styled.div`
 `;
 const TagChip = styled.div`
   background-color: ${COLORS.PRIMARY100};
+  width: fit-content;
   padding: 5px 8px;
   border-radius: 5px;
-  width: fit-content;
   font-size: 13px;
   color: #333;
 `;
 const Tab = styled(CenterAlign)`
+  position: sticky;
+  top: 0;
   justify-content: space-around;
-  border-top: 1px solid #eee;
-  border-bottom: 1px solid #eee;
+
+  border-top: 1px solid ${COLORS.GRAY300};
+  border-bottom: 1px solid ${COLORS.GRAY300};
+  background-color: #fff;
   height: 70px;
   a {
     display: block;
@@ -270,10 +272,11 @@ const MapContainer = styled.div`
 const Review = styled.div``;
 const Contact = styled(CenterAlign)`
   z-index: 1;
-  width: 420px;
   position: fixed;
   bottom: 60px;
   right: calc((100vw- (512px + 420px)) / 2);
+
+  width: 420px;
   padding: 20px;
   box-sizing: border-box;
 
@@ -283,17 +286,17 @@ const Contact = styled(CenterAlign)`
   }
 
   .call {
-    width: 20%;
     background-color: #fff;
     border: 1px solid #eee;
+    width: 20%;
     margin-right: 10px;
     &:hover {
       border: 1px solid ${COLORS.PRIMARY};
     }
   }
   .reserve {
-    width: 80%;
     background-color: ${COLORS.PRIMARY};
+    width: 80%;
     font-weight: bold;
     color: #fff;
     &:hover {

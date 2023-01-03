@@ -1,3 +1,4 @@
+import { COLORS } from './../src/config/styles';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
 
@@ -10,7 +11,8 @@ export const global = css`
     margin: 0;
     padding: 0;
   }
-  input {
+  input,
+  textarea {
     border: none;
     background-color: transparent;
     :focus {
@@ -46,4 +48,11 @@ export const Gap = styled.div`
   flex-direction: column;
   gap: 10px;
   margin: 10px 0;
+`;
+
+export const CommonInput = styled.input`
+  border: 1px solid ${COLORS.GRAY300};
+  border-radius: 10px;
+  padding: 15px;
+  box-sizing: border-box;
 `;

@@ -10,9 +10,11 @@ import MediaOnlyDiv from 'components/MediaOnlyDiv';
 import NavigationBar from 'components/NavigationBar';
 import { SearchField } from 'components/SearchField';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { useRouter } from 'next/router';
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient();
+  const router = useRouter();
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -21,7 +23,13 @@ export default function App({ Component, pageProps }: AppProps) {
         <MediaOnlyDiv media="desktop">
           <Layout>
             <MainContainer>
-              <Image src={horLogo} alt="horLogo" width={200} />
+              <Image
+                src={horLogo}
+                alt="horLogo"
+                width={200}
+                onClick={() => router.push('/')}
+                priority
+              />
               <Info>
                 <h1>동물병원 예약</h1>
                 <p>{`이제는 빠르고 간편하게\n주변 동물병원을 찾고 예약해보세요!`}</p>
@@ -47,7 +55,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <MediaOnlyDiv media="tablet">
           <Layout>
             <AppDisplay>
-              <Component {...pageProps} />
+              <PageDisplay>
+                <Component {...pageProps} />
+              </PageDisplay>
               <NavigationBar />
             </AppDisplay>
           </Layout>
@@ -56,7 +66,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <MediaOnlyDiv media="mobile">
           <Layout>
             <AppDisplay>
-              <Component {...pageProps} />
+              <PageDisplay>
+                <Component {...pageProps} />
+              </PageDisplay>
               <NavigationBar />
             </AppDisplay>
           </Layout>
@@ -78,24 +90,34 @@ const MainContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  img {
+    cursor: pointer;
+  }
 `;
 const AppDisplay = styled.div`
   background-color: #fff;
   max-width: 420px;
   width: 100%;
-  height: 100vh;
-  border: 1px solid #eee;
+  height: 100%;
+`;
+const PageDisplay = styled.div`
+  max-width: 420px;
+  width: 100%;
+  height: 100%;
+  padding-top: 60px;
+  border: 1px solid ${COLORS.GRAY300};
+  border-bottom: none;
   box-sizing: border-box;
+
+  position: fixed;
+  bottom: 60px;
+
   overflow-y: scroll;
   -ms-overflow-style: none; /* IE */
   scrollbar-width: none; /* Firefox */
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera, Edge */
   }
-`;
-const PageDisplay = styled.div`
-  height: 100%;
-  /* padding-bottom: 60px; */
 `;
 const Info = styled.div`
   display: flex;
@@ -107,18 +129,18 @@ const Info = styled.div`
     font-size: 45px;
   }
   p {
-    color: #9f9f9f;
+    color: ${COLORS.GRAY500};
     font-size: 18px;
     white-space: pre-wrap;
     line-height: 25px;
   }
   input {
     width: 90%;
-    color: #020309;
+    color: ${COLORS.DARK};
     padding: 10px 0;
   }
 `;
 const SearchBar = styled(SearchField)`
-  border: 1px solid #eee;
+  border: 1px solid ${COLORS.GRAY300};
   border-radius: 50px;
 `;

@@ -23,20 +23,14 @@ const MainPage = () => {
 const MapContainer = styled(CenterAlign)`
   width: 100%;
   height: 100%;
-  padding-bottom: 60px;
-  box-sizing: border-box;
   background-color: ${COLORS.PRIMARY100};
 `;
 const Float = styled(CenterAlign)`
-  display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
   justify-content: space-between;
   width: 90%;
   height: 95%;
   z-index: 1;
-
   .listButton {
     background-color: #fff;
     width: 120px;

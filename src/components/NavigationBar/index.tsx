@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import SearchIcon from '../../../public/images/SearchIcon.svg';
 import Chart from '../../../public/images/Chart.svg';
 import Account from '../../../public/images/Account.svg';
+import { COLORS } from 'config/styles';
 
 const NavigationBar = () => {
   return (
@@ -24,11 +25,17 @@ const NavigationBar = () => {
 
 const NavBar = styled.div`
   background-color: #fff;
+  border: 1px solid ${COLORS.GRAY300};
+  border-top: none;
+  box-sizing: border-box;
+
   display: flex;
   justify-content: space-around;
+
   max-width: 420px;
   width: 100%;
   height: 60px;
+
   position: fixed;
   bottom: 0;
   right: calc((100vw- (512px + 420px)) / 2);
@@ -39,6 +46,7 @@ const Tab = styled.div`
     display: inline-block;
     font-size: 13px;
   }
+
   display: flex;
   flex-direction: column;
   justify-content: center;
