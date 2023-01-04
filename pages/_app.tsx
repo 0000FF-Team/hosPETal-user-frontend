@@ -4,11 +4,10 @@ import styled from '@emotion/styled';
 import Image from 'next/image';
 import horLogo from '../public/images/horLogo.png';
 import SearchIcon from '../public/images/SearchIcon.svg';
-import { CenterAlign, global } from '../styles/global';
+import { CenterAlign, global, SearchField } from '../styles/global';
 import { COLORS } from 'config/styles';
 import MediaOnlyDiv from 'components/MediaOnlyDiv';
 import NavigationBar from 'components/NavigationBar';
-import { SearchField } from 'components/SearchField';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 

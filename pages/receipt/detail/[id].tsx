@@ -68,7 +68,7 @@ const Layout = styled.div`
 
   li {
     display: grid;
-    grid-template-columns: 1fr 1.5fr;
+    grid-template-columns: 1fr 1.8fr;
     span {
     }
   }

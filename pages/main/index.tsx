@@ -1,20 +1,29 @@
 import styled from '@emotion/styled';
-import { SearchField } from 'components/SearchField';
 import { COLORS } from 'config/styles';
+import { useRouter } from 'next/router';
+import { KeyboardEvent } from 'react';
 import SearchIcon from '../../public/images/SearchIcon.svg';
-import { CenterAlign } from '../../styles/global';
+import { CenterAlign, SearchField } from '../../styles/global';
 
 const MainPage = () => {
+  const router = useRouter();
+
+  const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
+    e.key === 'Enter' ? router.push('/search') : null;
+  };
+
   return (
     <MapContainer>
       <Float>
         <SearchBar>
-          <input placeholder="검색하기" />
+          <input type="text" placeholder="검색하기" onKeyUp={(e) => handleSubmit(e)} />
           <button type="submit">
             <SearchIcon fill="#333" className="searchIcon" />
           </button>
         </SearchBar>
-        <button className="listButton">목록보기</button>
+        <button className="listButton" onClick={() => router.push('/main/list')}>
+          목록보기
+        </button>
       </Float>
     </MapContainer>
   );

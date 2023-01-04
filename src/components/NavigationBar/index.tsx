@@ -17,10 +17,10 @@ const NavigationBar = () => {
         <Chart stroke="#333" />
         <p>예약 내역</p>
       </Tab>
-      <Tab onClick={() => router.push('/mypage')}>
+      {/* <Tab onClick={() => router.push('/mypage')}>
         <Account fill="#333" />
         <p>마이 페이지</p>
-      </Tab>
+      </Tab> */}
     </NavBar>
   );
 };
