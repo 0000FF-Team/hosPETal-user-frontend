@@ -10,3 +10,8 @@ export interface AccordionDataInfo {
   title: string;
   contents: JSX.Element;
 }
+
+export interface ReceiptCardInfo {
+  data: any;
+  id: string;
+}

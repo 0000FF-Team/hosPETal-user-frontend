@@ -1,9 +1,9 @@
+import styled from '@emotion/styled';
 import { DatePicker, Space } from 'antd';
 import type { DatePickerProps, RangePickerProps } from 'antd/es/date-picker';
+import { CenterAlign } from '../../../../styles/global';
 
 const DateField = () => {
-  const { RangePicker } = DatePicker;
-
   const onChange = (
     value: DatePickerProps['value'] | RangePickerProps['value'],
     dateString: [string, string] | string
@@ -17,10 +17,12 @@ const DateField = () => {
   };
 
   return (
-    <Space direction="vertical">
+    <Container>
       <DatePicker showTime onChange={onChange} onOk={onOk} />
-    </Space>
+    </Container>
   );
 };
+
+const Container = styled(CenterAlign)``;
 
 export default DateField;

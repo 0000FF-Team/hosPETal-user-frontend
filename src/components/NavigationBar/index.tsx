@@ -3,19 +3,21 @@ import SearchIcon from '../../../public/images/SearchIcon.svg';
 import Chart from '../../../public/images/Chart.svg';
 import Account from '../../../public/images/Account.svg';
 import { COLORS } from 'config/styles';
+import { useRouter } from 'next/router';
 
 const NavigationBar = () => {
+  const router = useRouter();
   return (
     <NavBar>
-      <Tab>
+      <Tab onClick={() => router.push('/')}>
         <SearchIcon fill="#333" />
         <p>병원 예약</p>
       </Tab>
-      <Tab>
+      <Tab onClick={() => router.push('/receipt')}>
         <Chart stroke="#333" />
-        <p>진료 내역</p>
+        <p>예약 내역</p>
       </Tab>
-      <Tab>
+      <Tab onClick={() => router.push('/mypage')}>
         <Account fill="#333" />
         <p>마이 페이지</p>
       </Tab>

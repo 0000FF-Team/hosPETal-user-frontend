@@ -12,7 +12,7 @@ const ContactField = () => {
         </Field>
         <Field>
           <b>연락처</b>
-          <CommonInput type="number" maxLength={11} placeholder="보호자 연락처를 입력해주세요." />
+          <CommonInput type="number" maxLength={11} placeholder="연락처를 입력해주세요." />
         </Field>
         <Field>
           <b>주소</b>
