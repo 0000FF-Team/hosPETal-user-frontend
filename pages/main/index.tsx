@@ -1,5 +1,9 @@
 import styled from '@emotion/styled';
+import Map from 'components/Map';
 import { COLORS } from 'config/styles';
+import useAddressToCoord from 'hooks/useAddressToCoord';
+import useLocation from 'hooks/useAddressToCoord';
+import useGeolocation from 'hooks/useGeolocation';
 import { useRouter } from 'next/router';
 import { KeyboardEvent } from 'react';
 import SearchIcon from '../../public/images/SearchIcon.svg';
@@ -12,8 +16,11 @@ const MainPage = () => {
     e.key === 'Enter' ? router.push('/search') : null;
   };
 
+  useGeolocation();
+
   return (
     <MapContainer>
+      <Map latitude={33.450701} longitude={126.570667} />
       <Float>
         <SearchBar>
           <input type="text" placeholder="검색하기" onKeyUp={(e) => handleSubmit(e)} />
@@ -35,11 +42,12 @@ const MapContainer = styled(CenterAlign)`
   background-color: ${COLORS.PRIMARY100};
 `;
 const Float = styled(CenterAlign)`
+  position: absolute;
   flex-direction: column;
   justify-content: space-between;
   width: 90%;
-  height: 95%;
-  z-index: 1;
+  height: 90%;
+  z-index: 5;
   .listButton {
     background-color: #fff;
     width: 120px;

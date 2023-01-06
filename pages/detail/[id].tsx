@@ -9,6 +9,7 @@ import { HospitalDetailProps } from 'config/types';
 import { COLORS } from 'config/styles';
 import { CenterAlign, Gap } from '../../styles/global';
 import { useRouter } from 'next/router';
+import Map from 'components/Map';
 
 const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
   const hospitalName = '서울 아산 병원';
@@ -129,7 +130,9 @@ const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
             <Copy stroke={`${COLORS.GRAY500}`} />
           </button>
         </InfoHead>
-        <MapContainer></MapContainer>
+        <MapContainer>
+          <Map latitude={37.402052} longitude={127.108212} />
+        </MapContainer>
       </HospitalInfo>
 
       <HospitalInfo className="borderN lastInfo">
