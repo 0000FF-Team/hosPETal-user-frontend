@@ -39,8 +39,8 @@ const ReceiptPage = () => {
     <Container>
       {Header('예약 내역')}
       <Layout>
-        {data.list.map((info) => (
-          <ReceiptCard data={info} id={data.id} />
+        {data.list.map((info, idx) => (
+          <ReceiptCard key={idx} data={info} id={data.id} />
         ))}
       </Layout>
     </Container>

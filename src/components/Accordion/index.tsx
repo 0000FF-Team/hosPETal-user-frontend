@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import ArrowUp from '../../../public/images/ArrowUp.svg';
 import ArrowDown from '../../../public/images/ArrowDown.svg';
 import { COLORS } from 'config/styles';
-import { LegacyRef, MutableRefObject, RefObject, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { CenterAlign } from '../../../styles/global';
 import { AccordionDataInfo } from 'config/types';
 

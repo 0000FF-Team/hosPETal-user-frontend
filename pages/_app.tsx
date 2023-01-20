@@ -10,7 +10,6 @@ import MediaOnlyDiv from 'components/MediaOnlyDiv';
 import NavigationBar from 'components/NavigationBar';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import useScript from 'hooks/useScript';
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient();

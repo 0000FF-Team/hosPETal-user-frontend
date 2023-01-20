@@ -1,45 +1,105 @@
 import styled from '@emotion/styled';
+import { HttpStatusCode } from 'axios';
 import { MapIProps } from 'config/types';
 import React, { useEffect } from 'react';
 
+// 병원 좌표
+const positions = [
+  {
+    id: 1,
+    name: '행복한 동물병원',
+    location: '경기도 안성시 영동 437-1',
+  },
+  {
+    id: 2,
+    name: '우리 동물병원',
+    location: '경기도 안성시 인지동 419-2',
+  },
+  {
+    id: 3,
+    name: '안성동물의료센터',
+    location: '경기 안성시 아양1로 73 안성동물의료센터',
+  },
+  {
+    id: 4,
+    name: '이성준 동물병원',
+    location: '경기도 안성시 봉남동 326-2',
+  },
+  {
+    id: 5,
+    name: '제네틱스 동물병원',
+    location: '경기도 안성시 계동 203-17',
+  },
+  {
+    id: 6,
+    name: '공도 동물병원',
+    location: '경기도 안성시 공도읍 승두리 62-1',
+  },
+  {
+    id: 7,
+    name: '웰니스 동물병원',
+    location: '경기도 안성시 서동대로 3930-39 스타필드안성 1층',
+  },
+];
+
 const Map = ({ latitude, longitude }: MapIProps) => {
   useEffect(() => {
-    // 카카오지도 API script 생성
-    const mapScript = document.createElement('script');
-    mapScript.async = true;
-    mapScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&autoload=false`;
-    document.head.appendChild(mapScript);
+    const mapLibraryServicesScript = document.createElement('script');
+    mapLibraryServicesScript.async = true;
+    mapLibraryServicesScript.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAOMAP_APPKEY}&libraries=services&autoload=false`;
+    document.head.appendChild(mapLibraryServicesScript);
 
     const onLoadKakaoMap = () => {
       const { kakao } = window;
-
       kakao.maps.load(() => {
+        // 지도 생성
         const container = document.getElementById('map');
         const options = {
-          center: new kakao.maps.LatLng(latitude, longitude), // 중심좌표 (필수)
-          // 옵션 목록
-          // level: Number : 확대 수준 (기본값: 3)
-          // mapTypeId: MapTypeId : 지도 종류 (기본값: 일반 지도)
-          // draggable: Boolean : 마우스 드래그, 휠, 모바일 터치를 이용한 시점 변경(이동, 확대, 축소) 가능 여부
-          // scrollwheel: Boolean : 마우스 휠, 모바일 터치를 이용한 확대 및 축소 가능 여부
-          // disableDoubleClick: Boolean : 더블클릭 이벤트 및 더블클릭 확대 가능 여부
-          // disableDoubleClickZoom: Boolean : 더블클릭 확대 가능 여부
-          // projectionId: String : 투영법 지정 (기본값: kakao.maps.ProjectionId.WCONG)
-          // tileAnimation: Boolean : 지도 타일 애니메이션 설정 여부 (기본값: true)
-          // keyboardShortcuts: Boolean | Object : 키보드의 방향키와 +, – 키로 지도 이동,확대,축소 가능 여부 (기본값: false)
+          center: new kakao.maps.LatLng(latitude, longitude),
+          level: 4,
+          draggable: true,
         };
         const map = new kakao.maps.Map(container, options);
-        const markerPosition = new kakao.maps.LatLng(latitude, longitude);
-        const marker = new kakao.maps.Marker({
-          position: markerPosition,
+
+        // 커스텀 마커 이미지
+        const imageSrc = '/images/marker.png';
+        const imageSize = new kakao.maps.Size(64, 64);
+        const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+
+        positions.map((position) => {
+          const geocoder = new kakao.maps.services.Geocoder(); // 주소-좌표 변환 객체 생성
+          geocoder.addressSearch(position.location, function (result: any, status: HttpStatusCode) {
+            if (status === kakao.maps.services.Status.OK) {
+              const coord = new kakao.maps.LatLng(result[0].y, result[0].x);
+              const marker = new kakao.maps.Marker({
+                map: map, // 마커를 표시할 지도
+                position: coord, // 마커를 표시할 위치
+                image: markerImage, // 마커 이미지
+              });
+
+              // 커스텀 오버레이
+              const customOverlay = new kakao.maps.CustomOverlay({
+                content: `<div class="customOverlay">
+                            <span>${position.name}</span>
+                          </div>`,
+                position: coord,
+              });
+
+              // 마우스를 올렸을 때 커스텀 오버레이 표시
+              kakao.maps.event.addListener(marker, 'mouseover', function () {
+                customOverlay.setMap(map);
+              });
+              kakao.maps.event.addListener(marker, 'mouseout', function () {
+                customOverlay.setMap(null);
+              });
+            }
+          });
         });
-        marker.setMap(map);
       });
     };
 
-    mapScript.addEventListener('load', onLoadKakaoMap); // 스크립트가 로드된 이후에 카카오맵을 표시하도록 호출
-
-    return () => mapScript.removeEventListener('load', onLoadKakaoMap); // 클린업
+    mapLibraryServicesScript.addEventListener('load', onLoadKakaoMap);
+    return () => mapLibraryServicesScript.removeEventListener('load', onLoadKakaoMap);
   }, [latitude, longitude]);
 
   return <MapContainer id="map" />;

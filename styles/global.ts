@@ -35,6 +35,22 @@ export const global = css`
   li {
     list-style: none;
   }
+
+  .customOverlay {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    transform: translate(-50%, -50%);
+
+    width: fit-content;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #fff;
+    box-shadow: 0px 1px 2px #888;
+    color: ${COLORS.DARK};
+    font-size: 14px;
+    font-weight: bold;
+  }
 `;
 
 export const CenterAlign = styled.div`

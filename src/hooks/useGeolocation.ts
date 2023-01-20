@@ -1,20 +1,41 @@
-import { useEffect } from 'react';
+import { locationType } from 'config/types';
+import { useEffect, useState } from 'react';
 
+// 사용자의 현재 위치(좌표)를 가져오는 hook
 const useGeolocation = () => {
-  useEffect(() => {
-    if ('geolocation' in navigator) {
-      /* 위치정보 사용 가능 */
-      navigator.geolocation.getCurrentPosition((position) => {
-        console.log(position.coords.latitude, position.coords.longitude);
-        const latitude = position.coords.latitude;
-        const longtitude = position.coords.longitude;
-        const data = { latitude, longtitude };
-        return data;
-      });
-    } else {
-      /* 위치정보 사용 불가능 */
-    }
+  const [location, setLocation] = useState<locationType>({
+    loaded: 'loading',
+    coordinates: { lat: 0, lng: 0 },
   });
+
+  const onSuccess = (location: { coords: { latitude: number; longitude: number } }) => {
+    setLocation({
+      loaded: 'true',
+      coordinates: {
+        lat: location.coords.latitude,
+        lng: location.coords.longitude,
+      },
+    });
+  };
+
+  const onError = (error: { code: number; message: string }) => {
+    setLocation({
+      loaded: 'false',
+      error,
+    });
+  };
+
+  useEffect(() => {
+    if (!('geolocation' in navigator)) {
+      onError({
+        code: 1,
+        message: 'Geolocation not supported',
+      });
+    }
+    navigator.geolocation.getCurrentPosition(onSuccess, onError);
+  }, []);
+
+  return location;
 };
 
 export default useGeolocation;

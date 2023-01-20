@@ -28,3 +28,9 @@ export interface MapIProps {
   latitude: number;
   longitude: number;
 }
+
+export interface locationType {
+  loaded: string;
+  coordinates?: { lat: number; lng: number };
+  error?: { code: number; message: string };
+}
