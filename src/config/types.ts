@@ -1,4 +1,5 @@
-import { HttpStatusCode } from 'axios';
+import { QueryFunctionContext } from '@tanstack/react-query';
+import { MouseEventHandler } from 'react';
 
 declare global {
   interface Window {
@@ -8,6 +9,7 @@ declare global {
 
 export interface HospitalDetailProps {
   hospitalInfo: [];
+  id: QueryFunctionContext<(string | number)[]>;
 }
 
 export interface SearchBarInfo {
@@ -21,12 +23,12 @@ export interface AccordionDataInfo {
 
 export interface ReceiptCardInfo {
   data: any;
-  id: string;
 }
 
 export interface MapIProps {
   latitude: number;
   longitude: number;
+  data?: any;
 }
 
 export interface locationType {

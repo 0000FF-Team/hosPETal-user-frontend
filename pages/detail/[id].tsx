@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { NextPage } from 'next';
+import { GetServerSideProps, NextPage } from 'next';
 import Bookmark from '../../public/images/Bookmark.svg';
 import Share from '../../public/images/Share.svg';
 import Star from '../../public/images/Star.svg';
@@ -9,30 +9,27 @@ import { HospitalDetailProps } from 'config/types';
 import { COLORS } from 'config/styles';
 import { CenterAlign, Gap } from '../../styles/global';
 import { useRouter } from 'next/router';
-import Map from 'components/Map';
+import { useQuery } from '@tanstack/react-query';
+import { getHospitalInfoApi, getHospitalInfoQueryKey } from 'config/apis';
+import MiniMap from 'components/MiniMap';
+import LoadingOverlay from 'components/LoadingOverlay';
+import ArrowLeft from '../../public/images/ArrowLeft.svg';
 
 const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
-  const hospitalName = '서울 아산 병원';
-  const grade = '3.1';
-  const notice = '12/30 (금) 오늘은 휴진입니다.';
-  const address = '서울특별시 송파구 올림픽로 43길 88 서울아산병원';
-  const treatDay = '수요일';
-  const startTime = '9:00';
-  const endTime = '17:00';
-  const treatTime = `${startTime} ~ ${endTime}`;
-  const introduce =
-    '서울아산병원은 존경받는 병원 으로서의 사회적 책임을 다하겠습니다. 연혁/의료성과 앞선 의술, 더 큰 사랑을 실천하고 있습니다.';
-  const tags = ['야간 진료', '응급 진료'];
-  const lunchStart = '12:00';
-  const lunchEnd = '1:30';
-  const lunchTime = `${lunchStart} ~ ${lunchEnd}`;
-  const imgUrl = 'https://www.amc.seoul.kr/asan/images/hospitalinfo/img_introRolling01.jpg';
-
   const router = useRouter();
-  // const id = router?.query.id;
-  // const hospitalInfo = useQuery([getHospitalInfoQueryKey, id], () => getHospitalInfoApi(id!));
-  // const { grade } = hospitalInfo.data;
-  // console.log(hospitalInfo);
+  const id = Number(router.query.id);
+  const { data, isLoading } = useQuery([getHospitalInfoQueryKey, id], () => getHospitalInfoApi(id));
+
+  const date = new Date();
+  const today = date.getDay();
+  const start = data?.treatTime[today].start.split(':').join('');
+  const end = data?.treatTime[today].end.split(':').join('');
+  const curTime = Number(
+    String(date.getHours()).padStart(2, '0') + String(date.getMinutes()).padStart(2, '0')
+  );
+
+  const isInTreatment =
+    data?.treatTime[today].start === '' ? false : curTime - start ? !!(end - curTime) : false;
 
   const paintStar = (count: number) => {
     const getStars = [];
@@ -63,98 +60,136 @@ const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
     return stars;
   };
 
+  const copyClipBoard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      alert('복사 완료');
+    } catch (error) {
+      alert('복사 실패');
+    }
+  };
+
   return (
     <Container>
-      <TopImgContainer>
-        <Buttons>
-          <button>
-            <Bookmark stroke="#fff" fill="rgba(78, 78, 78, 0.24)" />
-          </button>
-          <button>
-            <Share stroke="#fff" />
-          </button>
-        </Buttons>
-        <HospitalImg src={imgUrl} />
-      </TopImgContainer>
+      {isLoading ? (
+        <LoadingOverlay visible={isLoading} />
+      ) : (
+        <>
+          <TopImgContainer>
+            <Buttons>
+              <PrevButton
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                <ArrowLeft fill="#fff" />
+              </PrevButton>
+              <div className="right">
+                <button>
+                  <Bookmark stroke="#fff" fill="rgba(78, 78, 78, 0.24)" />
+                </button>
+                <button>
+                  <Share stroke="#fff" />
+                </button>
+              </div>
+            </Buttons>
+            <HospitalImg src={data.img} />
+          </TopImgContainer>
 
-      <HospitalInfo className="borderN">
-        <InfoHead>
-          <h1>{hospitalName}</h1>
-          <span className="treatStatus">진료중</span>
-        </InfoHead>
-        {paintStar(parseInt(grade))}
-        <span>
-          {`\n`}
-          {grade}
-        </span>
-        <Notice>{notice}</Notice>
-        <Gap>
-          <span>{address}</span>
-          <span>
-            <b>
-              {treatDay} {treatTime}
-            </b>
-          </span>
-          <Tags>
-            {tags.map((tag, index: number) => (
-              <TagChip key={index}>{tag}</TagChip>
-            ))}
-          </Tags>
-        </Gap>
-      </HospitalInfo>
+          <HospitalInfo className="mainTitle">
+            <InfoHead>
+              <h1>{data.name}</h1>
+              <span className={`treatStatus ${isInTreatment ? 'ing' : 'end'}`}>
+                {isInTreatment ? '진료중' : '진료 종료'}
+              </span>
+            </InfoHead>
+            {paintStar(parseInt(data.grade))}
+            <span>
+              {`\n`}
+              {data.grade}
+            </span>
+            <Gap>
+              <span>{data.address}</span>
+              <Tags>
+                {data.facilities.map((tag: string[], index: number) => (
+                  <TagChip key={index}>{tag}</TagChip>
+                ))}
+              </Tags>
+            </Gap>
+          </HospitalInfo>
 
-      <Tab>
-        <a>병원정보</a>
-        <a>진료정보</a>
-        <a>리뷰</a>
-      </Tab>
+          {/* <Tab>
+            <a>병원정보</a>
+            <a>진료정보</a>
+          </Tab> */}
 
-      <HospitalInfo className="borderN">
-        <h2>병원 정보</h2>
-        <Introduce>{introduce}</Introduce>
-        <Tags>
-          {tags.map((tag, index) => (
-            <TagChip key={index}>{tag}</TagChip>
-          ))}
-        </Tags>
-      </HospitalInfo>
+          <HospitalInfo>
+            <h2>병원 정보</h2>
+            <Introduce>{data.introduce}</Introduce>
+            <Tags>
+              {data.tags.map((tag: string[], index: number) => (
+                <TagChip key={index}>{tag}</TagChip>
+              ))}
+            </Tags>
+          </HospitalInfo>
 
-      <HospitalInfo>
-        <h2>위치</h2>
-        <InfoHead>
-          <Gap>
-            <span className="addressTitle">상세주소</span>
-            <span>{address}</span>
-          </Gap>
-          <button>
-            <Copy stroke={`${COLORS.GRAY500}`} />
-          </button>
-        </InfoHead>
-        <MapContainer>
-          <Map latitude={37.402052} longitude={127.108212} />
-        </MapContainer>
-      </HospitalInfo>
+          <HospitalInfo>
+            <h2>위치</h2>
+            <InfoHead>
+              <Gap>
+                <span className="addressTitle">상세주소</span>
+                <span>{data.address}</span>
+              </Gap>
+              <button onClick={() => copyClipBoard(data.address)}>
+                <Copy stroke={`${COLORS.GRAY500}`} />
+              </button>
+            </InfoHead>
+            <MapContainer>
+              <MiniMap data={data} />
+            </MapContainer>
+          </HospitalInfo>
 
-      <HospitalInfo className="borderN lastInfo">
-        <h2>진료 정보</h2>
-        <Notice>
-          <b>점심시간</b> {lunchTime}
-        </Notice>
-        <Notice>
-          <ul>
-            <li></li>
-          </ul>
-        </Notice>
-      </HospitalInfo>
+          <HospitalInfo className="lastInfo">
+            <h2>진료 정보</h2>
+            {data.lunchStart === '' ? null : (
+              <Notice>
+                <b>점심시간</b> {data.lunchStart} ~ {data.lunchEnd}
+              </Notice>
+            )}
+            <Notice className="treatTime">
+              <ul>
+                {data.treatTime.map((time: any, idx: number) => (
+                  <li key={idx} className={idx === today ? 'active' : ''}>
+                    {time.day}
+                  </li>
+                ))}
+              </ul>
+              <ul>
+                {data.treatTime.map((time: any, idx: number) =>
+                  time.start === '' ? (
+                    <li key={idx} className={idx === today ? 'active' : ''}>
+                      휴무
+                    </li>
+                  ) : (
+                    <li key={idx} className={idx === today ? 'active' : ''}>
+                      {time.start} ~ {time.end}
+                    </li>
+                  )
+                )}
+              </ul>
+            </Notice>
+          </HospitalInfo>
 
-      <Contact>
-        <button className="call">
-          <Call fill="#333" stroke="#333" />
-        </button>
-        <button className="reserve" onClick={() => router.push('/reserve')}>
-          예약하기
-        </button>
-      </Contact>
+          <Contact>
+            <a className="call" href={`tel:${data.number}`}>
+              <Call fill="#333" stroke="#333" />
+            </a>
+            <button className="reserve" onClick={() => router.push('/reserve')}>
+              예약하기
+            </button>
+          </Contact>
+        </>
+      )}
     </Container>
   );
 };
@@ -168,17 +203,22 @@ const TopImgContainer = styled.div`
   position: relative;
   width: 100%;
   height: 300px;
+  display: flex;
 `;
 const Buttons = styled.div`
   position: absolute;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   width: 100%;
-  padding: 15px 15px 0 0;
+  padding: 15px 15px 0 15px;
   box-sizing: border-box;
-  gap: 15px;
   z-index: 1;
+  div.right {
+    display: flex;
+    gap: 15px;
+  }
 `;
+const PrevButton = styled.button``;
 const HospitalImg = styled.img`
   width: 100%;
   height: 100%;
@@ -187,26 +227,15 @@ const HospitalImg = styled.img`
   background-size: contain;
 `;
 const HospitalInfo = styled.div`
-  padding: 15px;
+  padding: 20px 15px;
   box-sizing: border-box;
-  border-bottom: 3px solid ${COLORS.GRAY200};
+  /* border-bottom: 3px solid ${COLORS.GRAY200}; */
 
-  .treatStatus {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: fit-content;
-    padding: 0 10px;
-    height: 30px;
-    font-size: 14px;
-    background-color: ${COLORS.PRIMARY};
-    color: white;
-  }
-
-  &.borderN {
-    border: none;
+  &.mainTitle {
+    border-bottom: 5px solid ${COLORS.GRAY200};
   }
   &.lastInfo {
+    /* border: none; */
     padding-bottom: 80px;
   }
 `;
@@ -223,6 +252,22 @@ const InfoHead = styled.div`
       display: block;
     }
   }
+  .treatStatus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    padding: 0 10px;
+    height: 30px;
+    font-size: 14px;
+    background-color: ${COLORS.PRIMARY};
+    color: white;
+  }
+  .ing {
+  }
+  .end {
+    background-color: ${COLORS.GRAY500};
+  }
   .addressTitle {
     color: ${COLORS.GRAY500};
   }
@@ -235,14 +280,34 @@ const Notice = styled.div`
   border: 1px solid #eee;
   font-size: 15px;
   text-align: center;
+
+  &.treatTime {
+    display: flex;
+    justify-content: center;
+    ul {
+      width: 100%;
+    }
+    li {
+      line-height: 1.7;
+      margin: 15px 0;
+      &.active {
+        font-weight: bold;
+        background-color: ${COLORS.PRIMARY100};
+      }
+    }
+  }
 `;
 const Introduce = styled(Notice)`
   border: none;
   background-color: ${COLORS.GRAY200};
+  text-align: left;
+  white-space: pre-wrap;
+  line-height: 1.6;
 `;
 const Tags = styled.div`
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   gap: 10px;
 `;
 const TagChip = styled.div`
@@ -272,7 +337,6 @@ const MapContainer = styled.div`
   height: 300px;
   background-color: ${COLORS.GRAY200};
 `;
-const Review = styled.div``;
 const Contact = styled(CenterAlign)`
   z-index: 1;
   position: fixed;
@@ -288,7 +352,13 @@ const Contact = styled(CenterAlign)`
     border-radius: 10px;
   }
 
-  .call {
+  a.call {
+    height: 50px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     background-color: #fff;
     border: 1px solid #eee;
     width: 20%;
@@ -307,4 +377,5 @@ const Contact = styled(CenterAlign)`
     }
   }
 `;
+
 export default HospitalDetailPage;

@@ -6,42 +6,74 @@ import horLogo from '../public/images/horLogo.png';
 import SearchIcon from '../public/images/SearchIcon.svg';
 import { CenterAlign, global, SearchField } from '../styles/global';
 import { COLORS } from 'config/styles';
-import MediaOnlyDiv from 'components/MediaOnlyDiv';
 import NavigationBar from 'components/NavigationBar';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
+import { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient();
   const router = useRouter();
+  const [screen, setScreen] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const searchInput = useRef<HTMLInputElement>(null);
+
+  let timer: NodeJS.Timer;
+  const resizeWindow = () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      setScreen(window.innerWidth);
+    }, 100);
+  };
+
+  useEffect(() => {
+    setScreen(window.innerWidth);
+    window.addEventListener('resize', resizeWindow);
+    screen > 1024 ? setIsDesktop(true) : setIsDesktop(false);
+    console.log(searchInput.current?.value);
+    return () => {
+      window.removeEventListener('resize', resizeWindow);
+    };
+  }, [screen]);
+
+  const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
+    e.key === 'Enter' ? router.push(`/search?q=${searchInput.current?.value}`) : null;
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Global styles={global} />
-      <Container>
-        <MediaOnlyDiv media="desktop">
+      <Hydrate state={pageProps.dehydratedState}>
+        <Global styles={global} />
+        <Container>
           <Layout>
-            <MainContainer>
-              <Image
-                src={horLogo}
-                alt="horLogo"
-                width={200}
-                onClick={() => router.push('/')}
-                priority
-              />
-              <Info>
-                <h1>동물병원 예약</h1>
-                <p>{`이제는 빠르고 간편하게\n주변 동물병원을 찾고 예약해보세요!`}</p>
-                <SearchBar>
-                  <input placeholder="병원 이름을 검색해보세요" />
-                  <button type="submit">
-                    <SearchIcon fill="#333" className="searchIcon" />
-                  </button>
-                </SearchBar>
-              </Info>
-              <div />
-              <div />
-            </MainContainer>
+            {isDesktop ? (
+              <MainContainer>
+                <Image
+                  src={horLogo}
+                  alt="horLogo"
+                  width={200}
+                  onClick={() => router.push('/')}
+                  priority
+                />
+                <Info>
+                  <h1>동물병원 예약</h1>
+                  <p>{`이제는 빠르고 간편하게\n주변 동물병원을 찾고 예약해보세요!`}</p>
+                  <SearchBar>
+                    <input
+                      placeholder="병원 이름을 검색해보세요"
+                      onKeyUp={(e) => handleSubmit(e)}
+                      ref={searchInput}
+                    />
+                    <button type="submit">
+                      <SearchIcon fill="#333" className="searchIcon" />
+                    </button>
+                  </SearchBar>
+                </Info>
+                <div />
+                <div />
+              </MainContainer>
+            ) : null}
             <AppDisplay>
               <PageDisplay>
                 <Component {...pageProps} />
@@ -49,30 +81,9 @@ export default function App({ Component, pageProps }: AppProps) {
               <NavigationBar />
             </AppDisplay>
           </Layout>
-        </MediaOnlyDiv>
-
-        <MediaOnlyDiv media="tablet">
-          <Layout>
-            <AppDisplay>
-              <PageDisplay>
-                <Component {...pageProps} />
-              </PageDisplay>
-              <NavigationBar />
-            </AppDisplay>
-          </Layout>
-        </MediaOnlyDiv>
-
-        <MediaOnlyDiv media="mobile">
-          <Layout>
-            <AppDisplay>
-              <PageDisplay>
-                <Component {...pageProps} />
-              </PageDisplay>
-              <NavigationBar />
-            </AppDisplay>
-          </Layout>
-        </MediaOnlyDiv>
-      </Container>
+        </Container>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </Hydrate>
     </QueryClientProvider>
   );
 }
@@ -81,6 +92,7 @@ const Container = styled.div`
   position: fixed;
   width: 100vw;
   height: 100vh;
+  background-color: ${COLORS.PRIMARY100};
 `;
 const Layout = styled(CenterAlign)``;
 const MainContainer = styled.div`
@@ -100,6 +112,7 @@ const AppDisplay = styled.div`
   height: 100%;
 `;
 const PageDisplay = styled.div`
+  background-color: #fff;
   max-width: 420px;
   width: 100%;
   height: 100%;
@@ -128,8 +141,8 @@ const Info = styled.div`
     font-size: 45px;
   }
   p {
-    color: ${COLORS.GRAY500};
-    font-size: 18px;
+    color: #616c89;
+    font-size: 16px;
     white-space: pre-wrap;
     line-height: 25px;
   }
@@ -140,6 +153,6 @@ const Info = styled.div`
   }
 `;
 const SearchBar = styled(SearchField)`
-  border: 1px solid ${COLORS.GRAY300};
   border-radius: 50px;
+  background-color: #fff;
 `;

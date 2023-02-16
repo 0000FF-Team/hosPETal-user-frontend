@@ -15,7 +15,7 @@ const ReceiptPage = () => {
         <ul>
           <li>
             <b>반려동물 정보</b>
-            <span>김애옹</span>
+            <span>알콩</span>
           </li>
           <li>
             <b>보호자 연락처</b>
@@ -23,7 +23,7 @@ const ReceiptPage = () => {
           </li>
           <li>
             <b>날짜</b>
-            <span>2022. 12. 21 (수) 오후 2:30</span>
+            <span>2022. 02. 02 (금) 오후 2:30</span>
           </li>
           <li>
             <b>병원명</b>
@@ -35,11 +35,7 @@ const ReceiptPage = () => {
           </li>
           <li>
             <b>증상</b>
-            <span>
-              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est, dignissimos. Molestiae
-              provident, ad sequi eligendi recusandae velit vitae omnis pariatur. Sapiente molestiae
-              praesentium quidem veritatis quibusdam optio odio incidunt culpa!
-            </span>
+            <span>어디가 아픈가요 증상이 이래요~</span>
           </li>
         </ul>
       </Layout>

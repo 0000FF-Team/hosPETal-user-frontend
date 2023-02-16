@@ -1,46 +1,23 @@
 import styled from '@emotion/styled';
+import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
 import Header from 'components/Header';
 import ReceiptCard from 'components/ReceiptCard';
+import { getReserveListApi, getReserveListQueryKey } from 'config/apis';
+import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
 import { CenterAlign } from '../../styles/global';
-
-const PENDING = 'pending';
-const CANCELED = 'canceled';
-const DONE = 'done';
 
 const ReceiptPage = () => {
   const router = useRouter();
 
-  const data = {
-    id: '1',
-    list: [
-      {
-        status: 'pending',
-        name: '이마루',
-        hospital: '푸른 병원',
-        date: '2022. 12. 19 (월) 오후 1:30',
-      },
-      {
-        status: 'canceled',
-        name: '박강쥐',
-        hospital: '푸른 병원',
-        date: '2022. 12. 20 (화) 오후 3:00',
-      },
-      {
-        status: 'done',
-        name: '김애옹',
-        hospital: '푸른 병원',
-        date: '2022. 12. 21 (수) 오후 2:30',
-      },
-    ],
-  };
+  const { data } = useQuery([getReserveListQueryKey], getReserveListApi);
 
   return (
     <Container>
       {Header('예약 내역')}
       <Layout>
-        {data.list.map((info, idx) => (
-          <ReceiptCard key={idx} data={info} id={data.id} />
+        {data.map((info: Array<String>, idx: number) => (
+          <ReceiptCard key={idx} data={info} />
         ))}
       </Layout>
     </Container>
@@ -61,5 +38,17 @@ const Layout = styled.div`
   height: 95%;
   padding: 20px 0;
 `;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery([getReserveListQueryKey], getReserveListApi);
+  const dehydratedState = dehydrate(queryClient);
+
+  return {
+    props: {
+      dehydratedState,
+    },
+  };
+};
 
 export default ReceiptPage;

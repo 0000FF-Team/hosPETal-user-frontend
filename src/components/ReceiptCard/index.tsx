@@ -2,15 +2,15 @@ import styled from '@emotion/styled';
 import { COLORS } from 'config/styles';
 import { ReceiptCardInfo } from 'config/types';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 
-const ReceiptCard = ({ data, id }: ReceiptCardInfo) => {
+const ReceiptCard = ({ data }: ReceiptCardInfo) => {
   const router = useRouter();
-  const { status, name, hospital, date } = data;
+  const { reserved, pet, hospName, date, id } = data;
 
-  const pending = !!(status === 'pending');
-  const canceled = !!(status === 'canceled');
-  const done = !!(status === 'done');
+  const pending = !!(reserved === 'pending');
+  const canceled = !!(reserved === 'canceled');
+  const done = !!(reserved === 'done');
 
   const handleCancelButton = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.stopPropagation();
@@ -19,20 +19,32 @@ const ReceiptCard = ({ data, id }: ReceiptCardInfo) => {
       : alert('아니요 취소 안할래요!');
   };
 
+  const reservedDate = date.split(' ')[0];
+  const reservedTime = date.split(' ')[1].split(':').splice(1).join(':');
+  const transformDate = (date: any) => {
+    const week = ['일', '월', '화', '수', '목', '금', '토'];
+    const dayOfWeek = week[new Date(reservedDate).getDay()];
+    return dayOfWeek;
+  };
+
   return (
-    <Card className={status} onClick={() => router.push(`/receipt/detail/${id}`)}>
+    <Card className={reserved} onClick={() => router.push(`/receipt/detail/${id}`)}>
       <div>
         {pending && <h2>예약 확인중</h2>}
         {canceled && <h2>예약 취소</h2>}
         {done && <h2>접수 완료</h2>}
 
-        <span>{name}</span>
+        <span>{pet.name}</span>
         <MoreButton>상세보기</MoreButton>
       </div>
 
       <div>
-        <h3>{hospital}</h3>
-        <span>{date}</span>
+        <h3>{hospName}</h3>
+        <span>
+          {reservedDate}
+          {` (${transformDate(date)}) `}
+          {reservedTime}
+        </span>
 
         {pending && <CancelButton onClick={(e) => handleCancelButton(e)}>예약취소</CancelButton>}
       </div>

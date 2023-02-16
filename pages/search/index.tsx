@@ -1,9 +1,15 @@
 import styled from '@emotion/styled';
+import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
 import prevBtnHeader from 'components/prevBtnHeader';
+import { getHospitalListApi, getHospitalListQueryKey } from 'config/apis';
+import { GetServerSideProps } from 'next';
+import { useRouter } from 'next/router';
 import { CenterAlign } from '../../styles/global';
 
 const SearchPage = () => {
-  const keyword = '서울';
+  const router = useRouter();
+  const keyword = router.query.q;
+  const { data } = useQuery([getHospitalListQueryKey], getHospitalListApi);
 
   return (
     <Container>
@@ -27,5 +33,17 @@ const Layout = styled.div`
   height: 95%;
   padding: 20px 0;
 `;
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery([getHospitalListQueryKey], getHospitalListApi);
+  const dehydratedState = dehydrate(queryClient);
+
+  return {
+    props: {
+      dehydratedState,
+    },
+  };
+};
 
 export default SearchPage;

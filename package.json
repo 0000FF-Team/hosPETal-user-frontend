@@ -24,12 +24,14 @@
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
     "redux": "^4.2.0",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "xml-js": "^1.6.11"
   },
   "packageManager": "yarn@3.3.1",
   "devDependencies": {
     "@emotion/babel-plugin": "^11.10.5",
     "@svgr/webpack": "^6.5.1",
+    "@tanstack/react-query-devtools": "^4.23.0",
     "@typescript-eslint/eslint-plugin": "^5.47.1",
     "@typescript-eslint/parser": "^5.47.1",
     "@yarnpkg/sdks": "^3.0.0-rc.34",
