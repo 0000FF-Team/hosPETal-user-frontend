@@ -11,12 +11,14 @@ import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query
 import { useRouter } from 'next/router';
 import { KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import Main from 'components/Main';
 
 export default function App({ Component, pageProps }: AppProps) {
   const queryClient = new QueryClient();
   const router = useRouter();
   const [screen, setScreen] = useState(0);
   const [isDesktop, setIsDesktop] = useState(false);
+
   const searchInput = useRef<HTMLInputElement>(null);
 
   let timer: NodeJS.Timer;
@@ -31,14 +33,18 @@ export default function App({ Component, pageProps }: AppProps) {
     setScreen(window.innerWidth);
     window.addEventListener('resize', resizeWindow);
     screen > 1024 ? setIsDesktop(true) : setIsDesktop(false);
-    console.log(searchInput.current?.value);
     return () => {
       window.removeEventListener('resize', resizeWindow);
     };
   }, [screen]);
 
   const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
-    e.key === 'Enter' ? router.push(`/search?q=${searchInput.current?.value}`) : null;
+    e.key === 'Enter'
+      ? router.push({
+          pathname: '/search',
+          query: { q: searchInput.current?.value },
+        })
+      : null;
   };
 
   return (
@@ -76,7 +82,7 @@ export default function App({ Component, pageProps }: AppProps) {
             ) : null}
             <AppDisplay>
               <PageDisplay>
-                <Component {...pageProps} />
+                {router.asPath === '/' ? <Main /> : <Component {...pageProps} />}
               </PageDisplay>
               <NavigationBar />
             </AppDisplay>

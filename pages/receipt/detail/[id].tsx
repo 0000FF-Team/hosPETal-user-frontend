@@ -1,45 +1,54 @@
 import styled from '@emotion/styled';
+import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
 import prevBtnHeader from 'components/prevBtnHeader';
 import { COLORS } from 'config/styles';
+import { GetServerSideProps } from 'next';
 import { CenterAlign } from '../../../styles/global';
+import { getReserveInfoApi, getReserveInfoQueryKey } from 'config/apis';
+import useTransformDate from 'hooks/useTransformDate';
+import { ReceiptProps } from 'config/types';
 
-const PENDING = 'pending';
-const CANCELED = 'canceled';
-const DONE = 'done';
+const ReceiptPage = ({ id }: ReceiptProps) => {
+  const { data } = useQuery([getReserveInfoQueryKey, id], () => getReserveInfoApi(id));
+  const { date, hospName, protector, pet, symptom, treatment } = data;
+  const reserve = useTransformDate(date);
 
-const ReceiptPage = () => {
   return (
-    <Container>
+    <>
       {prevBtnHeader('예약 상세 정보')}
-      <Layout>
-        <ul>
-          <li>
-            <b>반려동물 정보</b>
-            <span>알콩</span>
-          </li>
-          <li>
-            <b>보호자 연락처</b>
-            <span>010-1234-0000</span>
-          </li>
-          <li>
-            <b>날짜</b>
-            <span>2022. 02. 02 (금) 오후 2:30</span>
-          </li>
-          <li>
-            <b>병원명</b>
-            <span>푸른 병원</span>
-          </li>
-          <li>
-            <b>진료항목</b>
-            <span>검사/검진</span>
-          </li>
-          <li>
-            <b>증상</b>
-            <span>어디가 아픈가요 증상이 이래요~</span>
-          </li>
-        </ul>
-      </Layout>
-    </Container>
+      <Container>
+        <Layout>
+          <ul>
+            <li>
+              <b>반려동물 정보</b>
+              <span>{pet.name}</span>
+            </li>
+            <li>
+              <b>보호자 연락처</b>
+              <span>{protector.phone}</span>
+            </li>
+            <li>
+              <b>날짜</b>
+              <span>
+                {reserve.date} ({reserve.day}) {reserve.time}
+              </span>
+            </li>
+            <li>
+              <b>병원명</b>
+              <span>{hospName}</span>
+            </li>
+            <li>
+              <b>진료항목</b>
+              <span>{treatment}</span>
+            </li>
+            <li>
+              <b>증상</b>
+              <span>{symptom}</span>
+            </li>
+          </ul>
+        </Layout>
+      </Container>
+    </>
   );
 };
 
@@ -69,5 +78,19 @@ const Layout = styled.div`
     }
   }
 `;
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const id = context.query.id;
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery([getReserveInfoQueryKey, id], () => getReserveInfoApi(id));
+  const dehydratedState = dehydrate(queryClient);
+
+  return {
+    props: {
+      id,
+      dehydratedState,
+    },
+  };
+};
 
 export default ReceiptPage;

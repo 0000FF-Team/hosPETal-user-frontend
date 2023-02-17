@@ -1,5 +1,4 @@
 import { QueryFunctionContext } from '@tanstack/react-query';
-import { MouseEventHandler } from 'react';
 
 declare global {
   interface Window {
@@ -35,4 +34,29 @@ export interface locationType {
   loaded: string;
   coordinates?: { lat: number; lng: number };
   error?: { code: number; message: string };
+}
+
+export interface HospitalInfoType {
+  data: {
+    id: number;
+    name: string;
+    address: string;
+    number: string;
+    grade?: number;
+    facilities?: string[];
+    img?: string;
+    introduce?: string;
+    lunchStart?: string;
+    lunchEnd?: string;
+    tags: string[];
+    treatTime: string[];
+  };
+}
+
+export interface ReceiptProps {
+  id: string | string[] | undefined;
+}
+
+export interface SearchProps {
+  keyword: string | string[] | undefined;
 }

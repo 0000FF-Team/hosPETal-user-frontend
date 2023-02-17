@@ -8,25 +8,24 @@ import { useRouter } from 'next/router';
 import { CenterAlign } from '../../styles/global';
 
 const ReceiptPage = () => {
-  const router = useRouter();
-
   const { data } = useQuery([getReserveListQueryKey], getReserveListApi);
 
   return (
-    <Container>
+    <>
       {Header('예약 내역')}
-      <Layout>
-        {data.map((info: Array<String>, idx: number) => (
-          <ReceiptCard key={idx} data={info} />
-        ))}
-      </Layout>
-    </Container>
+      <Container>
+        <Layout>
+          {data.map((info: Array<String>, idx: number) => (
+            <ReceiptCard key={idx} data={info} />
+          ))}
+        </Layout>
+      </Container>
+    </>
   );
 };
 
 const Container = styled(CenterAlign)`
   width: 100%;
-  height: 100%;
   flex-direction: column;
 `;
 const Layout = styled.div`

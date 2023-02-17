@@ -10,8 +10,6 @@ import ReceptionField from 'components/Forms/ReceptionField';
 import { useRouter } from 'next/router';
 import prevBtnHeader from 'components/prevBtnHeader';
 
-// https://www.mypetplus.co.kr/Product/ProductList/List?ctg1=26&ctg2=30&ctg3=44&lastCategory=&selMedical=&areaZone=&area=&pettype=&gender=&petsize=&petage=&foodsalt=&foodchemical=&foodspecial=&page=1&sText=
-
 const data = [
   {
     title: '반려동물 정보',
@@ -39,21 +37,22 @@ const reservePage = () => {
   const router = useRouter();
 
   return (
-    <Container>
+    <>
       {prevBtnHeader('예약 정보 입력')}
-      <Layout>
-        {data.map((data, index) => (
-          <Accordion title={data.title} contents={data.contents} key={index} />
-        ))}
-        <button onClick={() => router.push('/reserve/confirm')}>예약하기</button>
-      </Layout>
-    </Container>
+      <Container>
+        <Layout>
+          {data.map((data, index) => (
+            <Accordion title={data.title} contents={data.contents} key={index} />
+          ))}
+          <button onClick={() => router.push('/reserve/confirm')}>예약하기</button>
+        </Layout>
+      </Container>
+    </>
   );
 };
 
 const Container = styled(CenterAlign)`
   width: 100%;
-  height: 100%;
   flex-direction: column;
 `;
 const Layout = styled.div`

@@ -1,12 +1,14 @@
 import styled from '@emotion/styled';
 import { COLORS } from 'config/styles';
 import { ReceiptCardInfo } from 'config/types';
+import useTransformDate from 'hooks/useTransformDate';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const ReceiptCard = ({ data }: ReceiptCardInfo) => {
   const router = useRouter();
   const { reserved, pet, hospName, date, id } = data;
+  const reserve = useTransformDate(date);
 
   const pending = !!(reserved === 'pending');
   const canceled = !!(reserved === 'canceled');
@@ -19,13 +21,14 @@ const ReceiptCard = ({ data }: ReceiptCardInfo) => {
       : alert('아니요 취소 안할래요!');
   };
 
-  const reservedDate = date.split(' ')[0];
-  const reservedTime = date.split(' ')[1].split(':').splice(1).join(':');
-  const transformDate = (date: any) => {
-    const week = ['일', '월', '화', '수', '목', '금', '토'];
-    const dayOfWeek = week[new Date(reservedDate).getDay()];
-    return dayOfWeek;
-  };
+  const currentDate = new Date();
+  const today =
+    String(currentDate.getFullYear()) +
+    '-' +
+    String(currentDate.getMonth()).padStart(2, '0') +
+    '-' +
+    String(currentDate.getDate()).padStart(2, '0');
+  const isPrev = reserve.day > today;
 
   return (
     <Card className={reserved} onClick={() => router.push(`/receipt/detail/${id}`)}>
@@ -41,9 +44,9 @@ const ReceiptCard = ({ data }: ReceiptCardInfo) => {
       <div>
         <h3>{hospName}</h3>
         <span>
-          {reservedDate}
-          {` (${transformDate(date)}) `}
-          {reservedTime}
+          {reserve.date}
+          {` (${reserve.day}) `}
+          {reserve.time}
         </span>
 
         {pending && <CancelButton onClick={(e) => handleCancelButton(e)}>예약취소</CancelButton>}
@@ -80,6 +83,7 @@ const Card = styled.div`
       color: ${COLORS.GRAY500};
     }
   }
+
   span {
     line-height: 30px;
   }

@@ -20,7 +20,7 @@ const MiniMap = ({ data }: any) => {
           const container = document.getElementById('map');
           const options = {
             center: new kakao.maps.LatLng(result[0].y, result[0].x),
-            level: 3,
+            level: 2,
             draggable: true,
           };
           const map = new kakao.maps.Map(container, options);

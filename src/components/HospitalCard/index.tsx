@@ -1,26 +1,26 @@
 import styled from '@emotion/styled';
 import { COLORS } from 'config/styles';
+import { HospitalInfoType } from 'config/types';
+import { useRouter } from 'next/router';
 import React from 'react';
 
-const HospitalCard = () => {
+const HospitalCard = (data: HospitalInfoType) => {
+  const router = useRouter();
+  const { name, address, tags, id } = data.data;
+
   return (
-    <Card>
-      <h2>늘푸른 병원</h2>
+    <Card onClick={() => router.push(`/detail/${id}`)}>
+      <h2>{name}</h2>
       <Wrap>
-        <span>진료중</span>
-        <span>9:00~18:00</span>
+        <span>{address}</span>
       </Wrap>
-
-      <Wrap>
-        <span>20km</span>
-        <span>서울시 송파구 올림픽로 240</span>
-      </Wrap>
-
-      <Tags>
-        <TagChip>야간진료</TagChip>
-        <TagChip>응급진료</TagChip>
-        <TagChip>주말진료</TagChip>
-      </Tags>
+      {tags.length ? (
+        <Tags>
+          {tags.map((tag, idx: number) => (
+            <TagChip key={idx}>{tag}</TagChip>
+          ))}
+        </Tags>
+      ) : null}
     </Card>
   );
 };
@@ -28,25 +28,29 @@ const HospitalCard = () => {
 const Card = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 10px;
-
+  gap: 8px;
   width: 100%;
-  height: 300px;
   padding: 20px;
   border: 1px solid ${COLORS.GRAY300};
   border-radius: 4px;
   box-sizing: border-box;
   cursor: pointer;
+
+  h2 {
+    font-size: 20px;
+  }
 `;
 const Tags = styled.div`
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 5px;
 `;
 const TagChip = styled.span`
   background-color: ${COLORS.PRIMARY100};
-  padding: 3px 5px;
-  border-radius: 10px;
-  font-size: 14px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  font-size: 13px;
 `;
 const Wrap = styled.div``;
 export default HospitalCard;

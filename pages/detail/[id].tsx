@@ -134,22 +134,6 @@ const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
           </HospitalInfo>
 
           <HospitalInfo>
-            <h2>위치</h2>
-            <InfoHead>
-              <Gap>
-                <span className="addressTitle">상세주소</span>
-                <span>{data.address}</span>
-              </Gap>
-              <button onClick={() => copyClipBoard(data.address)}>
-                <Copy stroke={`${COLORS.GRAY500}`} />
-              </button>
-            </InfoHead>
-            <MapContainer>
-              <MiniMap data={data} />
-            </MapContainer>
-          </HospitalInfo>
-
-          <HospitalInfo className="lastInfo">
             <h2>진료 정보</h2>
             {data.lunchStart === '' ? null : (
               <Notice>
@@ -178,6 +162,22 @@ const HospitalDetailPage: NextPage<HospitalDetailProps> = () => {
                 )}
               </ul>
             </Notice>
+          </HospitalInfo>
+
+          <HospitalInfo className="lastInfo">
+            <h2>위치</h2>
+            <InfoHead>
+              <Gap>
+                <span className="addressTitle">상세주소</span>
+                <span>{data.address}</span>
+              </Gap>
+              <button onClick={() => copyClipBoard(data.address)}>
+                <Copy stroke={`${COLORS.GRAY500}`} />
+              </button>
+            </InfoHead>
+            <MapContainer>
+              <MiniMap data={data} />
+            </MapContainer>
           </HospitalInfo>
 
           <Contact>
@@ -229,14 +229,12 @@ const HospitalImg = styled.img`
 const HospitalInfo = styled.div`
   padding: 20px 15px;
   box-sizing: border-box;
-  /* border-bottom: 3px solid ${COLORS.GRAY200}; */
 
   &.mainTitle {
     border-bottom: 5px solid ${COLORS.GRAY200};
   }
   &.lastInfo {
-    /* border: none; */
-    padding-bottom: 80px;
+    padding-bottom: 150px;
   }
 `;
 const InfoHead = styled.div`

@@ -1,17 +1,16 @@
 import styled from '@emotion/styled';
-import { dehydrate, QueryClient, useQuery } from '@tanstack/react-query';
 import LoadingOverlay from 'components/LoadingOverlay';
 import Map from 'components/Map';
-import { getHospitalListApi, getHospitalListQueryKey } from 'config/apis';
 import { COLORS } from 'config/styles';
 import useGeolocation from 'hooks/useGeolocation';
-import { GetServerSideProps } from 'next';
 import { useRouter } from 'next/router';
-import { KeyboardEvent, useEffect, useRef, useState } from 'react';
-import SearchIcon from '../../public/images/SearchIcon.svg';
-import { CenterAlign, SearchField } from '../../styles/global';
+import React, { KeyboardEvent, useEffect, useRef, useState } from 'react';
+import { CenterAlign, SearchField } from '../../../styles/global';
+import SearchIcon from '../../../public/images/SearchIcon.svg';
+import { useQuery } from '@tanstack/react-query';
+import { getHospitalListApi, getHospitalListQueryKey } from 'config/apis';
 
-const MainPage = () => {
+const Main = () => {
   const router = useRouter();
   const location = useGeolocation();
   const [isLoading, setIsLoading] = useState(false);
@@ -20,11 +19,15 @@ const MainPage = () => {
     lng: 0,
   });
   const searchInput = useRef<HTMLInputElement>(null);
-
   const { data } = useQuery([getHospitalListQueryKey], getHospitalListApi);
 
   const handleSubmit = (e: KeyboardEvent<HTMLInputElement>) => {
-    e.key === 'Enter' ? router.push(`/search?q=${searchInput.current?.value}`) : null;
+    e.key === 'Enter'
+      ? router.push({
+          pathname: '/search',
+          query: { q: searchInput.current?.value },
+        })
+      : null;
   };
 
   useEffect(() => {
@@ -52,11 +55,6 @@ const MainPage = () => {
           </button>
         </SearchBar>
       </Float>
-      {/* <Float className="bottom">
-        <button className="listButton" onClick={() => router.push('/main/list')}>
-          목록보기
-        </button>
-      </Float> */}
       <LoadingOverlay visible={isLoading} />
     </MapContainer>
   );
@@ -69,23 +67,11 @@ const MapContainer = styled(CenterAlign)`
 `;
 const Float = styled(CenterAlign)`
   position: absolute;
-  /* flex-direction: column; */
-  /* justify-content: space-between; */
   width: 90%;
-  /* height: 90%; */
   z-index: 5;
   &.top {
     top: 90px;
   }
-  /* &.bottom {
-    bottom: 20px;
-  } */
-  /* .listButton {
-    background-color: #fff;
-    width: 120px;
-    height: 50px;
-    border-radius: 8px;
-  } */
 `;
 const SearchBar = styled(SearchField)`
   width: 90%;
@@ -94,16 +80,4 @@ const SearchBar = styled(SearchField)`
   border-radius: 8px;
 `;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const queryClient = new QueryClient();
-  await queryClient.prefetchQuery([getHospitalListQueryKey], getHospitalListApi);
-  const dehydratedState = dehydrate(queryClient);
-
-  return {
-    props: {
-      dehydratedState,
-    },
-  };
-};
-
-export default MainPage;
+export default Main;
