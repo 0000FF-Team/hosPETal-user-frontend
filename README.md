@@ -14,6 +14,10 @@
 
 
 ## 시작하기
+* Mock API 요청 횟수 제한으로 인해 `json-server` 브랜치를 딴 후 json-server로 대체하였습니다. 
+```bash
+git checkout json-server
+```
 ```bash
 yarn dev
 ```
@@ -26,6 +30,7 @@ yarn dev
 - 병원 이름 검색 가능
 
 ![메인화면](./public/images/ex-main.png)
+![검색화면](./public/images/ex-search.png)
 
 <br/>
 
